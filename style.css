@@ -1,8 +1,9 @@
+/* Core Layout & Colors */
 body {
     margin: 0;
     padding: 0;
-    background-color: #eeeae2; /* Cream background */
-    color: #2e3d58; /* Navy text */
+    background-color: #eeeae2;
+    color: #2e3d58;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     display: flex;
     flex-direction: column;
@@ -10,7 +11,7 @@ body {
 }
 
 header {
-    background-color: #2e3d58; /* Navy header */
+    background-color: #2e3d58;
     color: #eeeae2;
     padding: 1rem 2rem;
     text-align: center;
@@ -23,11 +24,62 @@ header h1 {
 
 header p {
     margin: 0.5rem 0 0 0;
-    color: #8d8c72; /* Olive accents */
+    color: #8d8c72;
 }
 
 #map {
-    flex-grow: 1; /* Makes the map fill the remaining screen height */
+    flex-grow: 1;
     width: 100%;
-    border-top: 4px solid #ba955c; /* Mustard divider */
+    border-top: 4px solid #ba955c;
+}
+
+/* Loading Screen Animation */
+#loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #eeeae2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease-out;
+}
+
+.epicenter {
+    width: 20px;
+    height: 20px;
+    background-color: #ba955c;
+    border-radius: 50%;
+    position: relative;
+}
+
+.epicenter::before, .epicenter::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    border: 2px solid #ba955c;
+    animation: ripple 2s linear infinite;
+}
+
+.epicenter::after {
+    animation-delay: 1s;
+}
+
+@keyframes ripple {
+    0% {
+        width: 20px;
+        height: 20px;
+        opacity: 1;
+    }
+    100% {
+        width: 150px;
+        height: 150px;
+        opacity: 0;
+    }
 }

@@ -7,21 +7,26 @@
 
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <!-- Your custom CSS -->
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- The 3-second animated loader -->
+    <div id="loader">
+        <div class="epicenter"></div>
+    </div>
+
     <header>
         <h1>Seismica</h1>
         <p>Real-time global seismic activity</p>
     </header>
 
-    <!-- The container where the map will render -->
+    <!-- The map container -->
     <div id="map"></div>
 
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <!-- Your custom JS -->
+    <!-- Custom JS -->
     <script src="app.js"></script>
 </body>
 </html>

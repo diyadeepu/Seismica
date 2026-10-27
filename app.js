@@ -1,37 +1,44 @@
-// 1. Initialize the map (centered globally, zoom level 2)
+// 1. Loading Screen Logic
+setTimeout(() => {
+    const loader = document.getElementById('loader');
+    loader.style.opacity = '0';
+
+    setTimeout(() => {
+        loader.style.display = 'none';
+    }, 500);
+}, 3000);
+
+// 2. Initialize the map
 const map = L.map('map').setView([20, 0], 2);
 
-// 2. Add the OpenStreetMap base tiles
+// 3. Add base tiles
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: '© OpenStreetMap'
 }).addTo(map);
 
-// 3. Define the USGS API URL (Earthquakes 2.5+ magnitude in the last 24 hours)
+// 4. Define API and Data Fetch Logic
 const usgsUrl = 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_day.geojson';
 
-// 4. Function to fetch and render data
 function fetchEarthquakes() {
     fetch(usgsUrl)
         .then(response => response.json())
         .then(data => {
-            // Clear existing markers before drawing new ones so they don't stack
+            // Clear old markers before drawing new ones
             map.eachLayer((layer) => {
-                // 'layer.feature' ensures we only delete earthquake data points,
-                // preventing us from accidentally deleting the base map tiles!
                 if (layer.feature) {
                     map.removeLayer(layer);
                 }
             });
 
-            // Add the new data
+            // Plot new markers
             L.geoJSON(data, {
                 pointToLayer: function (feature, latlng) {
                     let mag = feature.properties.mag;
                     return L.circleMarker(latlng, {
                         radius: mag * 2.5, // Scale radius by magnitude
                         fillColor: "#ba955c", // Mustard
-                        color: "#2e3d58", // Navy border
+                        color: "#2e3d58", // Navy
                         weight: 1,
                         opacity: 1,
                         fillOpacity: 0.7
@@ -53,8 +60,6 @@ function fetchEarthquakes() {
         .catch(error => console.error('Error fetching USGS data:', error));
 }
 
-// 5. Fetch immediately on load
+// 5. Execute Data Fetch Loop
 fetchEarthquakes();
-
-// 6. Fetch again every 60 seconds
 setInterval(fetchEarthquakes, 60000);
