@@ -2,8 +2,8 @@
 body {
     margin: 0;
     padding: 0;
-    background-color: #eeeae2;
-    color: #2e3d58;
+    background-color: #eeeae2; /* Cream */
+    color: #2e3d58; /* Navy */
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     display: flex;
     flex-direction: column;
@@ -24,13 +24,13 @@ header h1 {
 
 header p {
     margin: 0.5rem 0 0 0;
-    color: #8d8c72;
+    color: #8d8c72; /* Olive */
 }
 
 #map {
     flex-grow: 1;
     width: 100%;
-    border-top: 4px solid #ba955c;
+    border-top: 4px solid #ba955c; /* Mustard */
 }
 
 /* Loading Screen Animation */
@@ -42,6 +42,8 @@ header p {
     height: 100vh;
     background-color: #eeeae2;
     display: flex;
+    flex-direction: column;
+    gap: 80px; /* Separates text from the ripple */
     justify-content: center;
     align-items: center;
     z-index: 9999;
@@ -82,4 +84,18 @@ header p {
         height: 150px;
         opacity: 0;
     }
+}
+
+/* Loading Text Animation */
+.loading-text {
+    color: #2e3d58;
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin: 0;
+    animation: fadeText 1.5s infinite ease-in-out;
+}
+
+@keyframes fadeText {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
 }
