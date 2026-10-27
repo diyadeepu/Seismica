@@ -99,3 +99,26 @@ header p {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.4; }
 }
+
+/* Timeline Slider Controls */
+#timeline-container {
+    background-color: #2e3d58;
+    color: #eeeae2;
+    padding: 1rem 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-top: 2px solid #ba955c;
+}
+
+#timeLabel {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #ba955c;
+}
+
+#timeSlider {
+    width: 100%;
+    accent-color: #ba955c; /* Colors the slider track */
+    cursor: pointer;
+}
