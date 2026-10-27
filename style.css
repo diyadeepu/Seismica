@@ -1,1 +1,33 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #eeeae2; /* Cream background */
+    color: #2e3d58; /* Navy text */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
 
+header {
+    background-color: #2e3d58; /* Navy header */
+    color: #eeeae2;
+    padding: 1rem 2rem;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 1.8rem;
+}
+
+header p {
+    margin: 0.5rem 0 0 0;
+    color: #8d8c72; /* Olive accents */
+}
+
+#map {
+    flex-grow: 1; /* Makes the map fill the remaining screen height */
+    width: 100%;
+    border-top: 4px solid #ba955c; /* Mustard divider */
+}
