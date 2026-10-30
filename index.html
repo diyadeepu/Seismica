@@ -9,8 +9,9 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Interactive Canvas Loader -->
     <div id="loader">
-        <div class="epicenter"></div>
+        <canvas id="seismic-canvas"></canvas>
         <p class="loading-text">Synchronizing seismic feeds...</p>
     </div>
 
@@ -21,13 +22,17 @@
 
     <div id="map"></div>
 
-    <!-- New Timeline Slider -->
+    <!-- Timeline Slider & Controls -->
     <div id="timeline-container">
-        <label for="timeSlider" id="timeLabel">Displaying all recent activity</label>
+        <div class="controls-header">
+            <label for="timeSlider" id="timeLabel">Displaying all recent activity</label>
+            <button id="toggleHeatmap" class="toggle-btn">Enable Heatmap</button>
+        </div>
         <input type="range" id="timeSlider" min="0" max="100" value="100">
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
     <script src="app.js"></script>
 </body>
 </html>

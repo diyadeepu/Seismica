@@ -2,8 +2,8 @@
 body {
     margin: 0;
     padding: 0;
-    background-color: #eeeae2; /* Cream */
-    color: #2e3d58; /* Navy */
+    background-color: #eeeae2;
+    color: #2e3d58;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     display: flex;
     flex-direction: column;
@@ -24,80 +24,13 @@ header h1 {
 
 header p {
     margin: 0.5rem 0 0 0;
-    color: #8d8c72; /* Olive */
+    color: #8d8c72;
 }
 
 #map {
     flex-grow: 1;
     width: 100%;
-    border-top: 4px solid #ba955c; /* Mustard */
-}
-
-/* Loading Screen Animation */
-#loader {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: #eeeae2;
-    display: flex;
-    flex-direction: column;
-    gap: 80px; /* Separates text from the ripple */
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-    transition: opacity 0.5s ease-out;
-}
-
-.epicenter {
-    width: 20px;
-    height: 20px;
-    background-color: #ba955c;
-    border-radius: 50%;
-    position: relative;
-}
-
-.epicenter::before, .epicenter::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    border-radius: 50%;
-    border: 2px solid #ba955c;
-    animation: ripple 2s linear infinite;
-}
-
-.epicenter::after {
-    animation-delay: 1s;
-}
-
-@keyframes ripple {
-    0% {
-        width: 20px;
-        height: 20px;
-        opacity: 1;
-    }
-    100% {
-        width: 150px;
-        height: 150px;
-        opacity: 0;
-    }
-}
-
-/* Loading Text Animation */
-.loading-text {
-    color: #2e3d58;
-    font-weight: 600;
-    letter-spacing: 1px;
-    margin: 0;
-    animation: fadeText 1.5s infinite ease-in-out;
-}
-
-@keyframes fadeText {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
+    border-top: 4px solid #ba955c;
 }
 
 /* Timeline Slider Controls */
@@ -111,6 +44,12 @@ header p {
     border-top: 2px solid #ba955c;
 }
 
+.controls-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 #timeLabel {
     font-size: 0.9rem;
     font-weight: 600;
@@ -119,31 +58,62 @@ header p {
 
 #timeSlider {
     width: 100%;
-    accent-color: #ba955c; /* Colors the slider track */
+    accent-color: #ba955c;
     cursor: pointer;
 }
 
-.mini-quake {
+/* Heatmap Toggle Button */
+.toggle-btn {
+    background-color: #ba955c;
+    color: #2e3d58;
+    border: none;
+    padding: 0.4rem 1rem;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.toggle-btn:hover {
+    background-color: #eeeae2;
+}
+
+/* Canvas Loading Screen */
+#loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #eeeae2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease-out;
+}
+
+#seismic-canvas {
     position: absolute;
-    width: 10px;
-    height: 10px;
-    border: 2px solid #8d8c72; /* Olive colored ripples */
-    border-radius: 50%;
-    transform: translate(-50%, -50%); /* Centers the ripple on the cursor */
-    animation: miniRipple 1s ease-out forwards;
-    pointer-events: none; /* Prevents the ripple from blocking subsequent clicks */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
 }
 
-@keyframes miniRipple {
-    0% {
-        width: 10px;
-        height: 10px;
-        opacity: 1;
-    }
-    100% {
-        width: 100px;
-        height: 100px;
-        opacity: 0;
-    }
+.loading-text {
+    position: relative;
+    z-index: 1;
+    color: #2e3d58;
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin: 0;
+    padding-top: 120px; /* Pushes text below the canvas wave */
+    animation: fadeText 1.5s infinite ease-in-out;
 }
 
+@keyframes fadeText {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
