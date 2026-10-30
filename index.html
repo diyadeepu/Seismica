@@ -5,10 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Seismica | Live Earthquakes</title>
 
+    <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- The 3-second animated loader with text -->
     <div id="loader">
         <div class="epicenter"></div>
         <p class="loading-text">Synchronizing seismic feeds...</p>
@@ -19,15 +22,23 @@
         <p>Real-time global seismic activity</p>
     </header>
 
+    <!-- The map container -->
     <div id="map"></div>
 
-    <!-- New Timeline Slider -->
+    <!-- Timeline Slider & Controls -->
     <div id="timeline-container">
-        <label for="timeSlider" id="timeLabel">Displaying all recent activity</label>
+        <div class="controls-header">
+            <label for="timeSlider" id="timeLabel">Displaying all recent activity</label>
+            <button id="toggleHeatmap" class="toggle-btn">Enable Heatmap</button>
+        </div>
         <input type="range" id="timeSlider" min="0" max="100" value="100">
     </div>
 
+    <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Leaflet Heat Plugin -->
+    <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+    <!-- Custom JS -->
     <script src="app.js"></script>
 </body>
 </html>

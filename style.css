@@ -146,3 +146,48 @@ header p {
         opacity: 0;
     }
 }
+
+/* Timeline Slider Controls */
+#timeline-container {
+    background-color: #2e3d58;
+    color: #eeeae2;
+    padding: 1rem 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-top: 2px solid #ba955c;
+}
+
+.controls-header {
+    display: flex;
+    justify-content: space- space-between;
+    align-items: center;
+}
+
+#timeLabel {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #ba955c;
+}
+
+#timeSlider {
+    width: 100%;
+    accent-color: #ba955c;
+    cursor: pointer;
+}
+
+/* Heatmap Toggle Button */
+.toggle-btn {
+    background-color: #ba955c;
+    color: #2e3d58;
+    border: none;
+    padding: 0.4rem 1rem;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.toggle-btn:hover {
+    background-color: #eeeae2;
+}
