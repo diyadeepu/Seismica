@@ -4,7 +4,7 @@ const canvas = document.getElementById('seismic-canvas');
 const ctx = canvas.getContext('2d');
 
 let width, height;
-let mouseX = -1000; // Start offscreen
+let mouseX = -1000;
 
 function resize() {
     width = canvas.width = window.innerWidth;
@@ -13,12 +13,8 @@ function resize() {
 window.addEventListener('resize', resize);
 resize();
 
-loader.addEventListener('mousemove', (e) => {
-    mouseX = e.clientX;
-});
-loader.addEventListener('mouseleave', () => {
-    mouseX = -1000;
-});
+loader.addEventListener('mousemove', (e) => { mouseX = e.clientX; });
+loader.addEventListener('mouseleave', () => { mouseX = -1000; });
 
 let time = 0;
 let animationId;
@@ -29,21 +25,16 @@ function drawWave() {
     ctx.moveTo(0, height / 2);
 
     for (let x = 0; x <= width; x += 2) {
-        // Base smooth sine wave
         let y = height / 2 + Math.sin(x * 0.01 + time) * 15;
-
-        // Interactive seismic disturbance near the mouse cursor
         let dist = Math.abs(x - mouseX);
         if (dist < 200) {
             let intensity = (200 - dist) / 200;
-            // Add jagged random noise scaled by proximity to cursor
             y += (Math.random() - 0.5) * 120 * intensity;
         }
-
         ctx.lineTo(x, y);
     }
 
-    ctx.strokeStyle = '#ba955c'; // Mustard
+    ctx.strokeStyle = '#ba955c';
     ctx.lineWidth = 2.5;
     ctx.stroke();
 
@@ -52,12 +43,11 @@ function drawWave() {
 }
 drawWave();
 
-// Hide loader after 4.5 seconds to allow time to interact
 setTimeout(() => {
     loader.style.opacity = '0';
     setTimeout(() => {
         loader.style.display = 'none';
-        cancelAnimationFrame(animationId); // Free up browser memory
+        cancelAnimationFrame(animationId);
     }, 500);
 }, 4500);
 
@@ -69,6 +59,7 @@ let allEarthquakes = [];
 let minTime = 0;
 let maxTime = 0;
 let isHeatmapMode = false;
+const knownQuakeIds = new Set(); // Tracks previously seen epicenters
 
 const slider = document.getElementById('timeSlider');
 const timeLabel = document.getElementById('timeLabel');
@@ -89,6 +80,22 @@ function fetchEarthquakes() {
         .then(response => response.json())
         .then(data => {
             allEarthquakes = data.features;
+            let isInitialLoad = knownQuakeIds.size === 0;
+
+            allEarthquakes.forEach(f => {
+                // If it's a subsequent refresh and the ID is unrecognized, flag it
+                if (!isInitialLoad && !knownQuakeIds.has(f.id)) {
+                    f.properties.isNew = true;
+
+                    // Remove the pulse effect after 15 seconds
+                    setTimeout(() => {
+                        f.properties.isNew = false;
+                        renderMap();
+                    }, 15000);
+                }
+                knownQuakeIds.add(f.id);
+            });
+
             const times = allEarthquakes.map(f => f.properties.time);
             minTime = Math.min(...times);
             maxTime = Math.max(...times);
@@ -125,11 +132,12 @@ function renderMap() {
             pointToLayer: function (feature, latlng) {
                 return L.circleMarker(latlng, {
                     radius: feature.properties.mag * 2.5,
-                    fillColor: "#ba955c",
-                    color: "#2e3d58",
+                    fillColor: feature.properties.isNew ? "#2d4a3e" : "#ba955c", // Swaps to dark green if new
+                    color: feature.properties.isNew ? "#eeeae2" : "#2e3d58",     // Swaps to cream border if new
                     weight: 1,
                     opacity: 1,
-                    fillOpacity: 0.7
+                    fillOpacity: 0.7,
+                    className: feature.properties.isNew ? 'pulse-new' : ''
                 });
             },
             onEachFeature: function (feature, layer) {
