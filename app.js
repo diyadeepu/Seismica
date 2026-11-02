@@ -1,57 +1,81 @@
-// 1. Interactive Canvas Loading Screen
+// Interactive Canvas Loading Screen
 const loader = document.getElementById('loader');
-const canvas = document.getElementById('seismic-canvas');
-const ctx = canvas.getContext('2d');
+if (loader) {
+    const canvas = document.getElementById('seismic-canvas');
+    const ctx = canvas.getContext('2d');
+    let width, height;
+    let mouseX = -1000;
 
-let width, height;
-let mouseX = -1000;
-
-function resize() {
-    width = canvas.width = window.innerWidth;
-    height = canvas.height = window.innerHeight;
-}
-window.addEventListener('resize', resize);
-resize();
-
-loader.addEventListener('mousemove', (e) => { mouseX = e.clientX; });
-loader.addEventListener('mouseleave', () => { mouseX = -1000; });
-
-let time = 0;
-let animationId;
-
-function drawWave() {
-    ctx.clearRect(0, 0, width, height);
-    ctx.beginPath();
-    ctx.moveTo(0, height / 2);
-
-    for (let x = 0; x <= width; x += 2) {
-        let y = height / 2 + Math.sin(x * 0.01 + time) * 15;
-        let dist = Math.abs(x - mouseX);
-        if (dist < 200) {
-            let intensity = (200 - dist) / 200;
-            y += (Math.random() - 0.5) * 120 * intensity;
-        }
-        ctx.lineTo(x, y);
+    function resize() {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
     }
+    window.addEventListener('resize', resize);
+    resize();
 
-    ctx.strokeStyle = '#ba955c';
-    ctx.lineWidth = 2.5;
-    ctx.stroke();
+    loader.addEventListener('mousemove', (e) => { mouseX = e.clientX; });
+    loader.addEventListener('mouseleave', () => { mouseX = -1000; });
 
-    time += 0.1;
-    animationId = requestAnimationFrame(drawWave);
-}
-drawWave();
+    let time = 0;
+    let animationId;
 
-setTimeout(() => {
-    loader.style.opacity = '0';
+    function drawWave() {
+        ctx.clearRect(0, 0, width, height);
+        ctx.beginPath();
+        ctx.moveTo(0, height / 2);
+
+        for (let x = 0; x <= width; x += 2) {
+            let y = height / 2 + Math.sin(x * 0.01 + time) * 15;
+            let dist = Math.abs(x - mouseX);
+            if (dist < 200) {
+                let intensity = (200 - dist) / 200;
+                y += (Math.random() - 0.5) * 120 * intensity;
+            }
+            ctx.lineTo(x, y);
+        }
+        ctx.strokeStyle = '#ba955c';
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+        time += 0.1;
+        animationId = requestAnimationFrame(drawWave);
+    }
+    drawWave();
+
     setTimeout(() => {
-        loader.style.display = 'none';
-        cancelAnimationFrame(animationId);
-    }, 500);
-}, 4500);
+        loader.style.opacity = '0';
+        setTimeout(() => {
+            loader.style.display = 'none';
+            cancelAnimationFrame(animationId);
+        }, 500);
+    }, 4500);
+}
 
-// 2. API Keys & State Variables
+// Global UI Logic (Dark Mode)
+const darkModeToggle = document.getElementById('darkModeToggle');
+let isDark = localStorage.getItem('darkMode') === 'true';
+
+const lightTiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' });
+const darkTiles = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 19, attribution: '© CARTO' });
+
+function applyTheme() {
+    if (isDark) {
+        document.body.classList.add('dark-mode');
+        if (map) { map.removeLayer(lightTiles); darkTiles.addTo(map); }
+    } else {
+        document.body.classList.remove('dark-mode');
+        if (map) { map.removeLayer(darkTiles); lightTiles.addTo(map); }
+    }
+}
+
+if (darkModeToggle) {
+    darkModeToggle.addEventListener('click', () => {
+        isDark = !isDark;
+        localStorage.setItem('darkMode', isDark);
+        applyTheme();
+    });
+}
+
+// API Keys & State Variables
 const GEMINI_API_KEY = 'YAQ.Ab8RN6LegiLhTovzd6VxDW_Ztiuj-SWh8DWYV-b40H9Eg_ax7g';
 const usgsUrl = 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_day.geojson';
 
@@ -59,22 +83,18 @@ let allEarthquakes = [];
 let minTime = 0;
 let maxTime = 0;
 let isHeatmapMode = false;
-const knownQuakeIds = new Set(); // Tracks previously seen epicenters
+const knownQuakeIds = new Set();
 
 const slider = document.getElementById('timeSlider');
 const timeLabel = document.getElementById('timeLabel');
 const heatmapBtn = document.getElementById('toggleHeatmap');
 
-// 3. Initialize Map & Layer Group
+// Initialize Map
 const map = L.map('map').setView([20, 0], 2);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '© OpenStreetMap'
-}).addTo(map);
-
+applyTheme();
 const dataLayer = L.layerGroup().addTo(map);
 
-// 4. Data Fetching
+// Data Fetching
 function fetchEarthquakes() {
     fetch(usgsUrl)
         .then(response => response.json())
@@ -83,15 +103,9 @@ function fetchEarthquakes() {
             let isInitialLoad = knownQuakeIds.size === 0;
 
             allEarthquakes.forEach(f => {
-                // If it's a subsequent refresh and the ID is unrecognized, flag it
                 if (!isInitialLoad && !knownQuakeIds.has(f.id)) {
                     f.properties.isNew = true;
-
-                    // Remove the pulse effect after 15 seconds
-                    setTimeout(() => {
-                        f.properties.isNew = false;
-                        renderMap();
-                    }, 15000);
+                    setTimeout(() => { f.properties.isNew = false; renderMap(); }, 15000);
                 }
                 knownQuakeIds.add(f.id);
             });
@@ -104,7 +118,7 @@ function fetchEarthquakes() {
         .catch(error => console.error('Error fetching USGS data:', error));
 }
 
-// 5. Dynamic Rendering & Gemini Integration
+// Dynamic Rendering & Gemini Integration
 function renderMap() {
     const sliderValue = slider.value;
     const targetTime = minTime + ((maxTime - minTime) * (sliderValue / 100));
@@ -120,11 +134,8 @@ function renderMap() {
 
     if (isHeatmapMode) {
         const heatPoints = filteredFeatures.map(f => [
-            f.geometry.coordinates[1],
-            f.geometry.coordinates[0],
-            f.properties.mag
+            f.geometry.coordinates[1], f.geometry.coordinates[0], f.properties.mag
         ]);
-
         const heatLayer = L.heatLayer(heatPoints, { radius: 20, blur: 15, maxZoom: 10, max: 8.0 });
         dataLayer.addLayer(heatLayer);
     } else {
@@ -132,11 +143,9 @@ function renderMap() {
             pointToLayer: function (feature, latlng) {
                 return L.circleMarker(latlng, {
                     radius: feature.properties.mag * 2.5,
-                    fillColor: feature.properties.isNew ? "#2d4a3e" : "#ba955c", // Swaps to dark green if new
-                    color: feature.properties.isNew ? "#eeeae2" : "#2e3d58",     // Swaps to cream border if new
-                    weight: 1,
-                    opacity: 1,
-                    fillOpacity: 0.7,
+                    fillColor: feature.properties.isNew ? "#2d4a3e" : "#ba955c",
+                    color: feature.properties.isNew ? "#eeeae2" : "#2e3d58",
+                    weight: 1, opacity: 1, fillOpacity: 0.7,
                     className: feature.properties.isNew ? 'pulse-new' : ''
                 });
             },
@@ -164,8 +173,7 @@ function renderMap() {
 
                     try {
                         const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
+                            method: 'POST', headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
                         });
                         const result = await response.json();
@@ -181,9 +189,7 @@ function renderMap() {
     }
 }
 
-// 6. Listeners and Execution
 slider.addEventListener('input', renderMap);
-
 heatmapBtn.addEventListener('click', () => {
     isHeatmapMode = !isHeatmapMode;
     heatmapBtn.innerText = isHeatmapMode ? "Disable Heatmap" : "Enable Heatmap";

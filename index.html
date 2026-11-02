@@ -4,25 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Seismica | Live Earthquakes</title>
-
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Interactive Canvas Loader -->
     <div id="loader">
         <canvas id="seismic-canvas"></canvas>
         <p class="loading-text">Synchronizing seismic feeds...</p>
     </div>
 
     <header>
-        <h1>Seismica</h1>
-        <p>Real-time global seismic activity</p>
+        <div class="header-titles">
+            <h1>Seismica</h1>
+            <p>Real-time global seismic activity</p>
+        </div>
+        <nav class="header-nav">
+            <a href="index.html" class="active">Live Map</a>
+            <a href="analytics.html">Analytics</a>
+            <button id="darkModeToggle" class="toggle-btn">Dark Mode</button>
+        </nav>
     </header>
 
     <div id="map"></div>
 
-    <!-- Timeline Slider & Controls -->
     <div id="timeline-container">
         <div class="controls-header">
             <label for="timeSlider" id="timeLabel">Displaying all recent activity</label>

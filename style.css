@@ -1,20 +1,47 @@
+/* CSS Variables for Theming */
+:root {
+    --bg-color: #eeeae2;
+    --text-color: #2e3d58;
+    --header-bg: #2e3d58;
+    --header-text: #eeeae2;
+    --accent: #ba955c;
+    --accent-hover: #a3824f;
+    --card-bg: #ffffff;
+    --border-color: #cccccc;
+}
+
+body.dark-mode {
+    --bg-color: #1a1e24;
+    --text-color: #eeeae2;
+    --header-bg: #111418;
+    --header-text: #ba955c;
+    --card-bg: #222831;
+    --border-color: #394867;
+}
+
 /* Core Layout & Colors */
 body {
     margin: 0;
     padding: 0;
-    background-color: #eeeae2;
-    color: #2e3d58;
+    background-color: var(--bg-color);
+    color: var(--text-color);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     display: flex;
     flex-direction: column;
     height: 100vh;
+    transition: background-color 0.3s, color 0.3s;
 }
 
 header {
-    background-color: #2e3d58;
-    color: #eeeae2;
+    background-color: var(--header-bg);
+    color: var(--header-text);
     padding: 1rem 2rem;
-    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    transition: background-color 0.3s;
 }
 
 header h1 {
@@ -27,44 +54,61 @@ header p {
     color: #8d8c72;
 }
 
+.header-nav {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.header-nav a {
+    color: var(--header-text);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.header-nav a.active {
+    color: var(--accent);
+    border-bottom: 2px solid var(--accent);
+}
+
 #map {
     flex-grow: 1;
     width: 100%;
-    border-top: 4px solid #ba955c;
+    border-top: 4px solid var(--accent);
 }
 
 /* Timeline Slider Controls */
 #timeline-container {
-    background-color: #2e3d58;
-    color: #eeeae2;
+    background-color: var(--header-bg);
     padding: 1rem 2rem;
     display: flex;
     flex-direction: column;
     gap: 10px;
-    border-top: 2px solid #ba955c;
+    border-top: 2px solid var(--accent);
 }
 
 .controls-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 #timeLabel {
     font-size: 0.9rem;
     font-weight: 600;
-    color: #ba955c;
+    color: var(--accent);
 }
 
-#timeSlider {
+#timeSlider, #timelapseSlider {
     width: 100%;
-    accent-color: #ba955c;
+    accent-color: var(--accent);
     cursor: pointer;
 }
 
-/* Heatmap Toggle Button */
 .toggle-btn {
-    background-color: #ba955c;
+    background-color: var(--accent);
     color: #2e3d58;
     border: none;
     padding: 0.4rem 1rem;
@@ -75,7 +119,53 @@ header p {
 }
 
 .toggle-btn:hover {
-    background-color: #eeeae2;
+    background-color: var(--accent-hover);
+}
+
+/* Dashboard Grid for Analytics */
+.dashboard-grid {
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 1.5rem;
+    overflow-y: auto;
+}
+
+.dashboard-card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.dashboard-card h3 {
+    margin-top: 0;
+    color: var(--accent);
+}
+
+.playback-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 15px;
+}
+
+.leaderboard {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.leaderboard li {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+}
+
+.leaderboard li:last-child {
+    border-bottom: none;
 }
 
 /* Canvas Loading Screen */
@@ -85,7 +175,7 @@ header p {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: #eeeae2;
+    background-color: var(--bg-color);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -105,11 +195,11 @@ header p {
 .loading-text {
     position: relative;
     z-index: 1;
-    color: #2e3d58;
+    color: var(--text-color);
     font-weight: 600;
     letter-spacing: 1px;
     margin: 0;
-    padding-top: 120px; /* Pushes text below the canvas wave */
+    padding-top: 120px;
     animation: fadeText 1.5s infinite ease-in-out;
 }
 
@@ -118,23 +208,35 @@ header p {
     50% { opacity: 0.4; }
 }
 
-/* New Earthquake Pulse Animation */
 .pulse-new {
     animation: newQuakePulse 0.8s ease-in-out infinite alternate;
     transform-origin: center;
 }
 
 @keyframes newQuakePulse {
-    0% {
-        fill: #2d4a3e; /* Dark green */
-        stroke: #eeeae2; /* Cream */
-        stroke-width: 1;
-        fill-opacity: 0.8;
+    0% { fill: #2d4a3e; stroke: var(--bg-color); stroke-width: 1; fill-opacity: 0.8; }
+    100% { fill: #2d4a3e; stroke: var(--bg-color); stroke-width: 4; fill-opacity: 1; }
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        align-items: flex-start;
     }
-    100% {
-        fill: #2d4a3e;
-        stroke: #eeeae2;
-        stroke-width: 4;
-        fill-opacity: 1;
+
+    .header-nav {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        padding: 1rem;
+    }
+
+    .controls-header {
+        flex-direction: column;
+        align-items: flex-start;
     }
 }
